@@ -29,7 +29,7 @@ const fetchProducts = async () => {
 
 
 //getting all favorites
-const getAllfavorites = async () => {
+const fetchFavorites = async () => {
   const response = await client.query(
     `SELECT * FROM "Favorite" ORDER BY id ASC`
   );
@@ -51,7 +51,7 @@ const addFavorite = async (body) => {
 
 
 //deleting a favorite
-const deleteFavorite = async (id) => {
+const destroyFavorite = async (id) => {
   await client.query(`DELETE from "Favorite" WHERE id = $1`, [Number(id)]);
   return {
     id: id,
@@ -59,50 +59,26 @@ const deleteFavorite = async (id) => {
 };
 
 
-//getting a single favorite by a user's id
-const getSingleFavoriteByUserId = async (params_id) => {
-  const response = await client.query(`SELECT * FROM "User" WHERE id = $1`, [
-    params_id,
-  ]);
-  const { id, name } = response.rows[0];
-  const res_response = await client.query(
-    `SELECT * FROM "Favorite" WHERE user_id = $1`,
-    [params_id]
-  );
-  return {
-    id,
-    name,
-    favorite: res_response.rows,
+//getting favorites by a user's id
+const getFavoritesByUserId = async (params_id) => {
+    const fav_response = await client.query(
+      `SELECT * FROM "Favorite" WHERE user_id = $1`,
+      [params_id]
+    );
+    return {
+      favorites: fav_response.rows,
+    };
   };
-};
 
 
-//getting a single favorite by a product's id
-const getSingleFavoriteByProductId = async (params_id) => {
-  const response = await client.query(
-    `SELECT * FROM "Product" WHERE id = $1`,
-    [params_id]
-  );
-  const { id, name } = response.rows[0];
-  const res_response = await client.query(
-    `SELECT * FROM "Favorite" WHERE product_id = $1`,
-    [params_id]
-  );
-  return {
-    id,
-    name,
-    favorite: res_response.rows,
-  };
-};
 
 module.exports = {
 fetchUsers,
 fetchSingleUser,
 fetchProducts,
-getAllfavorites,
+fetchFavorites,
 addFavorite,
-deleteFavorite,
-getSingleFavoriteByProductId,
-getSingleFavoriteByUserId,
-  client,
+destroyFavorite,
+getFavoritesByUserId,
+client,
 };
