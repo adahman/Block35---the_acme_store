@@ -1,9 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  fetchFavorites,
-  addFavorite,
-  deleteFavorite,
+  fetchFavorites
 } = require("./db");
 
 
